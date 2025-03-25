@@ -7,14 +7,14 @@ class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
 
-        self.conv1 = nn.Conv2d(1,10,5)    # Convolutional layer
+        self.conv1 = nn.Conv2d(1, 10, 5)    # Convolutional layer
         self.bn1 = nn.BatchNorm2d(10)     # batch normalization
         self.mp1 = nn.MaxPool2d(2, 2)     # Max Pooling
 
-        self.conv2 = nn.Conv2d(10,20,3)
+        self.conv2 = nn.Conv2d(10, 20, 3)
         self.bn2 = nn.BatchNorm2d(20)
 
-        self.fc1 = nn.Linear(20*10*10,500)
+        self.fc1 = nn.Linear(20*10*10, 500)
         self.fc2 = nn.Linear(500, 10)
 
     def forward(self, x):
@@ -31,7 +31,7 @@ class CNN(nn.Module):
         x = F.relu(x)
 
         # 20*10*10 = 2000
-        x = x.view(input_size,-1)
+        x = x.view(input_size, -1)
 
         # in: batch*2000  out:batch*500
         x = self.fc1(x)

@@ -8,7 +8,7 @@ class ImagesDataset(Dataset):
     def __init__(self, data_dir,
                  transform=transforms.Compose([transforms.ToTensor()])):
 
-        self.data_dir = data_dir 
+        self.data_dir = data_dir
         self.class_set = sorted(os.listdir(data_dir))
         self.transform = transform
 
