@@ -27,7 +27,7 @@ train_sampler = SubsetRandomSampler(train_indices)
 valid_sampler = SubsetRandomSampler(val_indices)
 test_sampler = SubsetRandomSampler(test_incices)
 
-train_loader = DataLoader(alldata, batch_size=batch_size, 
+train_loader = DataLoader(alldata, batch_size=batch_size,
                                            sampler=train_sampler)
 validation_loader = DataLoader(alldata, batch_size=batch_size,
                                                 sampler=valid_sampler)
@@ -49,25 +49,25 @@ def accuracy(epoch_idx, test_loader, model, set_type=None):
 
     if set_type == "train":
         print('\nEpoch{}: Train accuracy: {}/{} ({:.0f}%)\n'.format(
-            epoch_idx, correct, len(test_loader.dataset),
-            100. * correct / len(test_loader.dataset)))
+            epoch_idx, correct, split_train,
+            100. * correct / split_train))
 
     if set_type == "test":
-        print('\nEpoch{}: Test accuracy: {}/{} ({:.0f}%)\n'.format(
-            epoch_idx, correct, len(test_loader.dataset),
-            100. * correct / len(test_loader.dataset)))
+        print('\nEpoch{}: Validation accuracy: {}/{} ({:.0f}%)\n'.format(
+            epoch_idx, correct, (split_val - split_train),
+            100. * correct / (split_val - split_train)))
 
     return correct / len(test_loader.dataset)
 
 
-learning_rate = 1e-3
-num_epochs = 10
+learning_rate = 1e-2
+num_epochs = 15
 
 loss_function = nn.CrossEntropyLoss()
-optimizer = SGD(model.parameters(), lr=learning_rate) # Stochastic Gradient Descent
+optimizer = SGD(model.parameters(), lr=learning_rate)
 
 for epoch in range(num_epochs):
-    print(f"Epoch {epoch}\n-------------------------------") 
+    print(f"-------------------------------\nEpoch {epoch}")
     for batch_index, (data, labels) in enumerate(train_loader):
         optimizer.zero_grad()
 
