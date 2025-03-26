@@ -60,8 +60,8 @@ def accuracy(epoch_idx, test_loader, model, set_type=None):
     return correct / len(test_loader.dataset)
 
 
-learning_rate = 1e-2
-num_epochs = 15
+learning_rate = 1e-3
+num_epochs = 20
 
 loss_function = nn.CrossEntropyLoss()
 optimizer = SGD(model.parameters(), lr=learning_rate)
