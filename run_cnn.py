@@ -1,4 +1,7 @@
 import numpy as np
+import torch
+from torch import nn
+from torch.optim import SGD
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 
@@ -19,8 +22,6 @@ np.random.seed(random_seed)
 np.random.shuffle(indices)
 train_indices, val_indices, test_incices = indices[:split_train], indices[split_train:split_val], indices[split_val:]
 
-print(len(train_indices), len(val_indices), len(test_incices))
-
 
 train_sampler = SubsetRandomSampler(train_indices)
 valid_sampler = SubsetRandomSampler(val_indices)
@@ -35,8 +36,46 @@ test_loader = DataLoader(alldata, batch_size=batch_size,
 
 model = CNN()
 
+
+def accuracy(epoch_idx, test_loader, model, set_type=None):
+    model.eval()
+
+    correct = 0
+    with torch.no_grad():
+        for data, labels in test_loader:
+            outputs = model(data)
+            _, predicted = torch.max(outputs.data, 1)
+            correct += (predicted == labels).sum().item()
+
+    if set_type == "train":
+        print('\nEpoch{}: Train accuracy: {}/{} ({:.0f}%)\n'.format(
+            epoch_idx, correct, len(test_loader.dataset),
+            100. * correct / len(test_loader.dataset)))
+
+    if set_type == "test":
+        print('\nEpoch{}: Test accuracy: {}/{} ({:.0f}%)\n'.format(
+            epoch_idx, correct, len(test_loader.dataset),
+            100. * correct / len(test_loader.dataset)))
+
+    return correct / len(test_loader.dataset)
+
+
+learning_rate = 1e-3
 num_epochs = 10
+
+loss_function = nn.CrossEntropyLoss()
+optimizer = SGD(model.parameters(), lr=learning_rate) # Stochastic Gradient Descent
+
 for epoch in range(num_epochs):
-    # Train:   
-    for batch_index, (faces, labels) in enumerate(train_loader):
-        # ...'
+    print(f"Epoch {epoch}\n-------------------------------") 
+    for batch_index, (data, labels) in enumerate(train_loader):
+        optimizer.zero_grad()
+
+        output = model(data)
+        loss = loss_function(output, labels)
+        loss.backward()
+
+        optimizer.step()
+
+    train_accuracy = accuracy(epoch, train_loader, model, set_type="train")
+    val_accuracy = accuracy(epoch, validation_loader, model, set_type="test")
