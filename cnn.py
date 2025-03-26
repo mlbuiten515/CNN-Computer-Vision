@@ -32,6 +32,7 @@ class CNN(nn.Module):
         # Layer Connecting
         self.flatten = nn.Flatten()
         self.fc1 = nn.Linear(16*16*128, 512)
+        self.dropout = nn.Dropout(p=0.5)
         self.fc2 = nn.Linear(512, 21)
         self.softmax = nn.Softmax(dim=1)
 
@@ -60,6 +61,7 @@ class CNN(nn.Module):
         x = self.flatten(x)
 
         x = self.fc1(x)
+        x = self.dropout(x)
         x = self.fc2(x)
         x = self.softmax(x)
 
