@@ -89,11 +89,13 @@ if __name__ == '__main__':
 
     batch_size = 32
     learning_rate = 1e-3
+    wd = 1e-4
     num_epochs = 30
 
     model = CNN()
     loss_function = nn.CrossEntropyLoss()
-    optimizer = SGD(model.parameters(), lr=learning_rate)
+    optimizer = SGD(model.parameters(), lr=learning_rate,
+                    weight_decay=wd)
 
     transform = transforms.Compose([transforms.Resize((256, 256)),
                                     transforms.ToTensor(),
