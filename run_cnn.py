@@ -88,7 +88,7 @@ def train(num_epochs, model, train_loader, validation_loader,
 if __name__ == '__main__':
 
     batch_size = 32
-    learning_rate = 1e-3
+    learning_rate = 5e-3
     wd = 1e-4
     num_epochs = 30
 
