@@ -85,12 +85,28 @@ def train(num_epochs, model, train_loader, validation_loader,
     return train_accuracy, val_accuracy
 
 
+def test(model, test_loader):
+    model.eval()
+
+    correct = 0
+    length = len(test_loader.sampler)
+    with torch.no_grad():
+        for data, labels in test_loader:
+            outputs = model(data)
+            _, predicted = torch.max(outputs.data, 1)
+            correct += (predicted == labels).sum().item()
+
+    accuracy = 100. * correct / length
+    print(f'Final test accuracy: {correct}/{length} ({accuracy:.0f}%)')
+    return accuracy
+
+
 if __name__ == '__main__':
 
     batch_size = 32
     learning_rate = 5e-3
     wd = 1e-4
-    num_epochs = 30
+    num_epochs = 10
 
     model = CNN()
     loss_function = nn.CrossEntropyLoss()
@@ -104,5 +120,7 @@ if __name__ == '__main__':
     alldata = ImagesDataset(r'UCMerced_LandUse\Images', transform)
 
     train_loader, val_loader, test_loader = data_loaders(alldata, batch_size)
-    final_test, final_val = train(num_epochs, model, train_loader, val_loader,
-                                  optimizer, loss_function)
+    final_train, final_val = train(num_epochs, model, train_loader, val_loader,
+                                   optimizer, loss_function)
+
+    test_accuracy = test(model, test_loader)
