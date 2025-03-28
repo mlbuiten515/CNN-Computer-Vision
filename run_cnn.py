@@ -11,7 +11,7 @@ from data_processing import ImagesDataset
 
 
 def data_loaders(dataset, batch_size):
-    random_seed = 42
+    random_seed = 0
     dataset_size = len(dataset)
     indices = list(range(dataset_size))
     split_train = int(np.floor(0.7 * dataset_size))
@@ -104,7 +104,7 @@ def test(model, test_loader):
 if __name__ == '__main__':
 
     batch_size = 32
-    learning_rate = 5e-3
+    learning_rate = 1e-3
     wd = 1e-4
     num_epochs = 10
 
