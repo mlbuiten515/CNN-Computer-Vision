@@ -34,7 +34,7 @@ class CNN(nn.Module):
         self.fc1 = nn.Linear(16*16*128, 2048)
         self.dropout1 = nn.Dropout(0.5)
         self.fc2 = nn.Linear(2048, 512)
-        self.dropout2 = nn.Dropout(0.3)
+        self.dropout2 = nn.Dropout(0.5)
         self.fc3 = nn.Linear(512, 21)
 
     def forward(self, x):
