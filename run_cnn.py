@@ -8,7 +8,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from cnn import CNN
 from data_processing import ImagesDataset
 
-alldata = ImagesDataset(r'UCMerced_LandUse\Images')
+alldata = ImagesDataset(r'UCMerced_LandUse/Images')
 
 batch_size = 16
 random_seed = 42
