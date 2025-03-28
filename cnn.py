@@ -15,7 +15,7 @@ class CNN(nn.Module):
         self.mp1 = nn.MaxPool2d(2, 2)  # output: 128 x 128 x 16
 
         # Layer 2
-        self.conv2 = nn.Conv2d(16, 32, 3, padding='same', dilation=2)
+        self.conv2 = nn.Conv2d(16, 32, 3, padding='same')
         self.bn2 = nn.BatchNorm2d(32)
         # output: 64 x 64 x 32
 
@@ -29,12 +29,13 @@ class CNN(nn.Module):
         self.bn4 = nn.BatchNorm2d(128)
         # output: 16 x 16 x 128
 
-        # Layer Connecting
+        # Classification
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(16*16*128, 512)
-        self.dropout = nn.Dropout(p=0.5)
-        self.fc2 = nn.Linear(512, 21)
-        self.softmax = nn.Softmax(dim=1)
+        self.fc1 = nn.Linear(16*16*128, 2048)
+        self.dropout1 = nn.Dropout(0.5)
+        self.fc2 = nn.Linear(2048, 512)
+        self.dropout2 = nn.Dropout(0.5)
+        self.fc3 = nn.Linear(512, 21)
 
     def forward(self, x):
 
@@ -61,8 +62,9 @@ class CNN(nn.Module):
         x = self.flatten(x)
 
         x = self.fc1(x)
-        x = self.dropout(x)
+        x = self.dropout1(x)
         x = self.fc2(x)
-        x = self.softmax(x)
+        x = self.dropout2(x)
+        x = self.fc3(x)
 
         return x
