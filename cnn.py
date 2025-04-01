@@ -9,7 +9,7 @@ class CNN(nn.Module):
         # input 128 x 128 x 3
 
         # Layer 1
-        self.conv1 = nn.Conv2d(3, 16, 3, padding='same')
+        self.conv1 = nn.Conv2d(3, 16, 5, padding='same')
         self.act = nn.ReLU()
         self.bn1 = nn.BatchNorm2d(16)
         self.mp1 = nn.MaxPool2d(2, 2)  # output: 64 x 64 x 16
