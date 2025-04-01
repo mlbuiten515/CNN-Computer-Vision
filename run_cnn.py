@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from torch import nn
-from torch.optim import SGD
+from torch.optim import Adam, lr_scheduler
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import transforms
@@ -62,6 +62,9 @@ def accuracy(epoch_idx, test_loader, model, set_type=None):
 def train(num_epochs, model, train_loader, validation_loader,
           optimizer, loss_function):
 
+    scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='max',
+                                               factor=0.5, patience=3,
+                                               verbose=True)
     for epoch in range(num_epochs):
         running_loss = 0.0
         print(f"-------------------------------\nEpoch {epoch}")
@@ -81,6 +84,7 @@ def train(num_epochs, model, train_loader, validation_loader,
         print(f'Train Loss: {epoch_loss:.4f}')
         train_accuracy = accuracy(epoch, train_loader, model, set_type="train")
         val_accuracy = accuracy(epoch, validation_loader, model, set_type="test")
+        scheduler.step(val_accuracy)
 
     return train_accuracy, val_accuracy
 
@@ -106,17 +110,21 @@ if __name__ == '__main__':
     batch_size = 32
     learning_rate = 1e-3
     wd = 1e-4
-    num_epochs = 10
+    num_epochs = 15
 
     model = CNN()
     loss_function = nn.CrossEntropyLoss()
-    optimizer = SGD(model.parameters(), lr=learning_rate,
-                    weight_decay=wd)
+    optimizer = Adam(model.parameters(), lr=learning_rate,
+                     weight_decay=wd)
 
-    transform = transforms.Compose([transforms.Resize((256, 256)),
+    transform = transforms.Compose([transforms.Resize((128, 128)),
+                                    transforms.RandomHorizontalFlip(),
+                                    transforms.RandomRotation(10),
+                                    transforms.ColorJitter(0.2, 0.2),
                                     transforms.ToTensor(),
-                                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                                         std=[0.229, 0.224, 0.225])])
+                                    transforms.Normalize([0.485, 0.456, 0.406],
+                                                         [0.229, 0.224, 0.225])
+                                    ])
     alldata = ImagesDataset(r'UCMerced_LandUse\Images', transform)
 
     train_loader, val_loader, test_loader = data_loaders(alldata, batch_size)
